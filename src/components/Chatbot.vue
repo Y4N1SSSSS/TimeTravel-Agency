@@ -12,7 +12,7 @@
           <template v-for="(msg, index) in messages" :key="index">
             <div v-if="msg.role !== 'system'" :class="msg.role">
               <strong>{{ msg.role === 'user' ? 'Vous' : 'TimeTravel' }}</strong>
-              <p>{{ msg.content }}</p>
+              <div class="markdown-body" v-html="renderMarkdown(msg.content)"></div>
             </div>
           </template>
         </div>
@@ -42,10 +42,11 @@
 
 <script setup>
 import { ref, nextTick } from 'vue';
+import { marked } from 'marked';
 
 const userInput = ref('');
 const loading = ref(false);
-const isOpen = ref(false); // État pour ouvrir/fermer le chat
+const isOpen = ref(false);
 const messagesContainer = ref(null);
 
 const API_KEY = 'kLCOJnFoikQbSiTdfWnnGDvVzFU3bscF';
@@ -64,9 +65,12 @@ const messages = ref([
   }
 ]);
 
+const renderMarkdown = (text) => {
+  return marked.parse(text);
+};
+
 const toggleChat = () => {
   isOpen.value = !isOpen.value;
-  // Scroll vers le bas à l'ouverture
   if(isOpen.value) scrollToBottom();
 };
 
@@ -118,126 +122,174 @@ const sendMessage = async () => {
 </script>
 
 <style scoped>
-/* Conteneur global fixé en bas à GAUCHE */
+/* POLICE GLOBALE */
 .chatbot-wrapper {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   position: fixed;
   bottom: 20px;
-  left: 20px; /* C'est ici qu'on définit la position */
+  right: 20px; /* CHANGEMENT ICI : positionné à DROITE */
   z-index: 9999;
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Aligne le bouton à gauche */
+  align-items: flex-end; /* CHANGEMENT ICI : alignement à DROITE */
   gap: 10px;
 }
 
-/* Le bouton rond (Logo) */
+/* BOUTON ROND PRINCIPAL */
 .toggle-btn {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background-color: #d4af37; /* Or luxueux */
+  background-color: #000000;
   color: white;
-  border: none;
+  border: 1px solid #333;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s, background-color 0.2s;
+  transition: all 0.3s ease;
 }
 
 .toggle-btn:hover {
-  transform: scale(1.1);
-  background-color: #b5952f;
+  transform: scale(1.05);
+  background-color: #1a1a1a;
 }
 
-/* La fenêtre de chat */
+/* FENÊTRE DE CHAT */
 .chat-window {
-  width: 320px;
-  height: 450px;
+  width: 350px;
+  height: 500px;
   background: white;
   border-radius: 12px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   border: 1px solid #e0e0e0;
 }
 
+/* HEADER */
 .header {
-  background: #2c3e50;
-  color: #d4af37;
-  padding: 15px;
+  background: #000000;
+  color: #ffffff;
+  padding: 15px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 1px solid #333;
 }
+.header h3 { 
+  margin: 0; 
+  font-size: 0.95rem; 
+  font-weight: 500; 
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.close-btn { 
+  background: none; 
+  border: none; 
+  color: white; 
+  cursor: pointer; 
+  font-size: 1.2rem;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.close-btn:hover { opacity: 1; }
 
-.header h3 { margin: 0; font-size: 1rem; }
-.close-btn { background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem; }
-
+/* MESSAGES */
 .messages { 
   flex: 1; 
-  padding: 15px; 
+  padding: 20px; 
   overflow-y: auto; 
-  background: #f8f9fa;
+  background: #ffffff;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
 }
 
 .user { 
   align-self: flex-end;
-  background: #2c3e50;
+  background: #000000;
   color: white;
-  padding: 8px 12px;
+  padding: 12px 16px;
   border-radius: 12px 12px 0 12px;
-  max-width: 80%;
+  max-width: 85%;
   font-size: 0.9rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
 .assistant { 
   align-self: flex-start;
-  background: white;
-  border: 1px solid #d4af37;
-  color: #333;
-  padding: 8px 12px;
+  background: #f9f9f9;
+  color: #000000;
+  padding: 12px 16px;
   border-radius: 12px 12px 12px 0;
-  max-width: 80%;
+  max-width: 85%;
   font-size: 0.9rem;
+  line-height: 1.6;
+  border: 1px solid #e0e0e0;
+  border-left: 3px solid #000000;
 }
 
-.user strong, .assistant strong { display: block; font-size: 0.75rem; margin-bottom: 4px; opacity: 0.8; }
-.user p, .assistant p { margin: 0; }
+.user strong, .assistant strong { 
+  display: block; 
+  font-size: 0.7rem; 
+  margin-bottom: 6px; 
+  opacity: 0.7; 
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
 
+/* MARKDOWN */
+.markdown-body :deep(p) { margin: 0 0 10px 0; }
+.markdown-body :deep(p:last-child) { margin-bottom: 0; }
+.markdown-body :deep(ul), .markdown-body :deep(ol) { margin: 5px 0 10px 0; padding-left: 20px; }
+.markdown-body :deep(li) { margin-bottom: 5px; }
+.markdown-body :deep(strong) { font-weight: 600; }
+
+/* INPUT */
 .input-area { 
-  padding: 10px; 
+  padding: 15px; 
   border-top: 1px solid #eee; 
   display: flex; 
-  gap: 5px; 
+  gap: 10px; 
   background: white;
 }
 
 input { 
   flex: 1; 
-  padding: 8px; 
+  padding: 12px; 
   border: 1px solid #ccc; 
-  border-radius: 20px; 
+  border-radius: 12px;
   outline: none;
+  font-size: 0.9rem;
+  transition: border-color 0.2s;
+  background: #fdfdfd;
 }
-input:focus { border-color: #d4af37; }
+input:focus { 
+  border-color: #000000;
+  background: #fff;
+}
 
 .input-area button { 
-  background: #d4af37; 
+  background: #000000;
   color: white; 
   border: none; 
-  width: 35px; 
-  height: 35px; 
-  border-radius: 50%; 
+  width: 42px; 
+  height: 42px; 
+  border-radius: 12px;
   cursor: pointer; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
 }
 
-/* Animations d'ouverture/fermeture */
-.fade-enter-active, .fade-leave-active { transition: opacity 0.3s, transform 0.3s; }
-.fade-enter-from, .fade-leave-to { opacity: 0; transform: translateY(20px); }
+.input-area button:hover { background: #333; }
+.input-area button:disabled { background: #ccc; cursor: not-allowed; }
+
+/* ANIMATIONS */
+.fade-enter-active, .fade-leave-active { transition: opacity 0.3s ease, transform 0.3s ease; }
+.fade-enter-from, .fade-leave-to { opacity: 0; transform: translateY(10px); }
 </style>
