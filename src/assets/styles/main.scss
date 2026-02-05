@@ -1,0 +1,232 @@
+@use 'reset';
+@use 'fonts';
+
+*{
+    font-family: "Inter";
+}
+
+.btn{
+    background-color: white;
+    border-radius: 20px;
+    padding: 12px 24px;
+    color: black;
+    text-decoration: none;
+    font-weight: 700;
+    font-family: "InterSemiBold";
+
+    &.white{
+        background-color: black;
+        color: white;
+    }
+}
+
+
+/* ===== HEADER ===== */
+
+
+.header{
+    background-color: black;
+}
+
+.header-container{
+    font-family: "Inter";
+    max-width: 1270px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    padding: 30px 0;
+
+    .nav-logo{
+        display: flex;
+        gap: 3rem;
+
+        .logo{
+            p{
+                font-family: "InterBold";
+                text-transform: uppercase;
+                color: white;
+            }
+        }
+
+        nav{
+            display: flex;
+            gap: 1rem;
+
+            a{
+                color: lightgrey;
+                text-decoration: none;
+            }
+        }
+    }
+}
+
+
+/* ===== HERO ===== */
+
+
+.hero{
+    background-image: url('./../images/hero.jpg');
+    background-size: cover;
+    height: calc(100vh - 76px);
+    display: flex;
+    align-items: center;
+
+    .container{
+        max-width: 1270px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+    }
+
+    h1,
+    h2{
+        color: white;
+        font-size: 48px;
+        font-family: "InterBold";
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    h2{
+        margin-top: 0.5rem;
+        font-size: 28px;
+        color: rgb(175, 175, 175);
+        text-transform: none;
+    }
+
+    p{
+        margin-top: 1rem;
+        color: white;
+        max-width: 800px;
+        text-align: center;
+        line-height: 24px;
+        font-size: 18px;
+    }
+
+    .btn-container{
+        margin-top: 3rem;
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+    }
+}
+
+
+/* ===== PRÉSENTATION ===== */
+
+
+.presentation{
+    padding-top: 5rem;
+    background-color: black;
+
+    .container{
+        display: flex;
+        max-width: 1270px;
+        margin: 0 auto;
+    }
+
+    .left{
+        width: 50%;
+        background-image: url("../images/presentation.jpg");
+        background-size: cover;
+        margin-right: 3rem;   
+    }
+    
+    .right{
+        width: 50%;
+        padding: 3rem 0;
+        color: white;
+
+        h3{
+            font-size: 28px;
+            font-family: "InterBold";
+        }
+
+        p{
+            padding-top: 1.5rem;
+            font-size: 18px;
+            line-height: 26px;
+            max-width: 450px;
+            padding-bottom: 3rem;
+        }
+    }
+}
+
+
+/* ===== DÉSTINATION -> Home ===== */
+
+
+.destination{
+    padding-top: 5rem;
+    background-color: black;
+    padding-bottom: 5rem;
+
+    .container{
+        display: grid;
+        max-width: 1270px;
+        margin: 0 auto;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 2rem;
+
+        .grid-content{
+            background-color: white;
+            position: relative;
+            border-radius: 25px;
+            height: 300px;
+            display: flex;
+            gap: 0.5rem;
+            flex-direction: column;
+            justify-content: end;
+            background-size: cover;
+            overflow: hidden;
+            padding: 3rem 1.5rem;
+
+            &::before{
+                content: "";
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                inset: 0;
+                background: rgba(0,0,0,0.45); 
+                z-index: 1;
+            }
+
+            > *{
+                position: relative;
+                z-index: 2;
+            }
+
+            h4{
+                color: white;
+                font-size: 22px;
+                text-align: center;
+                font-family: "InterSemiBold";
+                text-transform: uppercase;
+            }
+
+            p{
+                color: white;
+                font-size: 18px;
+                text-align: center;
+            }
+
+            .btn{
+                width: max-content;
+                margin: 0 auto;
+                margin-top: 1rem;
+            }
+
+            &.destun{
+                background-image: url("../images/destination_1.jpg");
+            }
+
+            &.destdeux{
+                background-image: url("../images/destination_2.jpg");
+            }
+
+            &.desttrois{
+                background-image: url("../images/destination_3.jpg");
+            }
+        }
+    }
+}
