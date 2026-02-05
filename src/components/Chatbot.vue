@@ -4,7 +4,12 @@
     <transition name="fade">
       <div v-if="isOpen" class="chat-window">
         <div class="header">
-          <h3>Assistant TimeTravel</h3>
+          <div class="header-left">
+            <h3>Assistant TimeTravel</h3>
+            <button class="quiz-btn" @click="startQuiz" :disabled="loading">
+              <span>QUIZ</span>- Trouver mon voyage
+            </button>
+          </div>
           <button class="close-btn" @click="toggleChat">✕</button>
         </div>
         
@@ -15,6 +20,10 @@
               <div class="markdown-body" v-html="renderMarkdown(msg.content)"></div>
             </div>
           </template>
+          
+          <div v-if="loading" class="assistant loading">
+            <span>...</span>
+          </div>
         </div>
 
         <div class="input-area">
@@ -23,6 +32,7 @@
             @keyup.enter="sendMessage" 
             placeholder="Une question ?" 
             :disabled="loading"
+            ref="inputFocus"
           />
           <button @click="sendMessage" :disabled="loading">
             <span v-if="!loading">➤</span>
@@ -48,20 +58,22 @@ const userInput = ref('');
 const loading = ref(false);
 const isOpen = ref(false);
 const messagesContainer = ref(null);
+const inputFocus = ref(null);
 
 const API_KEY = 'kLCOJnFoikQbSiTdfWnnGDvVzFU3bscF';
 
+// --- 1. CONTEXTE DE BASE (Conversation normale) ---
 const messages = ref([
   {
     role: "system",
     content: `Tu es l'assistant virtuel de TimeTravel Agency, une agence de voyage temporel de luxe.
     Ton rôle : conseiller les clients sur les meilleures destinations temporelles.
     Ton ton : Professionnel mais chaleureux, passionné d'histoire, toujours enthousiaste sans être trop familier. Expert en voyage temporel (fictif mais crédible).
-    Tu connais parfaitement :
-    - Paris 1889 (Belle Époque, Tour Eiffel, Exposition Universelle)
-    - Crétacé -65M (dinosaures, nature préhistorique)
-    - Florence 1504 (Renaissance, art, Michel-Ange)
-    Tu peux suggérer des destinations selon les intérêts du client.`
+    
+    NOS 3 SEULES DESTINATIONS (Ne parle jamais d'autre chose) :
+    1. Paris 1889 (Belle Époque, Tour Eiffel, Exposition Universelle)
+    2. Crétacé -65M (dinosaures, nature préhistorique, aventure)
+    3. Florence 1504 (Renaissance, art, Michel-Ange)`
   }
 ]);
 
@@ -81,13 +93,8 @@ const scrollToBottom = async () => {
   }
 };
 
-const sendMessage = async () => {
-  if (!userInput.value.trim()) return;
-
-  const userMessage = { role: 'user', content: userInput.value };
-  messages.value.push(userMessage);
-  
-  userInput.value = ''; 
+// --- 2. FONCTION APPEL API ---
+const callMistralApi = async () => {
   loading.value = true;
   scrollToBottom();
 
@@ -117,8 +124,51 @@ const sendMessage = async () => {
   } finally {
     loading.value = false;
     scrollToBottom();
+    if(inputFocus.value) inputFocus.value.focus();
   }
 };
+
+// --- 3. ENVOI MESSAGE UTILISATEUR ---
+const sendMessage = async () => {
+  if (!userInput.value.trim()) return;
+
+  const userMessage = { role: 'user', content: userInput.value };
+  messages.value.push(userMessage);
+  
+  userInput.value = ''; 
+  await callMistralApi();
+};
+
+// --- 4. MODE QUIZ STRICT (MODIFIÉ POUR LES 3 DESTINATIONS) ---
+const startQuiz = async () => {
+  // A. Message utilisateur simulé
+  messages.value.push({ role: 'user', content: "J'aimerais trouver ma destination idéale, guidez-moi." });
+
+  // B. INJECTION DU PROMPT STRICT
+  messages.value.push({
+    role: "system",
+    content: `URGENT - MODE QUIZ ACTIVÉ.
+    
+    RÈGLE ABSOLUE : Tu ne dois recommander QUE l'une de ces 3 destinations (interdiction d'en inventer d'autres) :
+    1. Paris 1889 (Pour les profils : Élégance, Histoire moderne, Effervescence urbaine, Monuments)
+    2. Crétacé -65M (Pour les profils : Aventure, Nature, Temps anciens, Faune)
+    3. Florence 1504 (Pour les profils : Culture, Renaissance, Art, Musées)
+
+    TA MISSION : Pose ces 4 questions UNE PAR UNE (attends la réponse du client entre chaque question) :
+
+    1. "Quel type d'expérience recherchez-vous ?" (Options : Culturelle et artistique, Aventure et nature, Élégance et raffinement)
+    2. "Votre période préférée ?" (Options : Histoire moderne XIXe-XXe, Temps anciens, Renaissance)
+    3. "Vous préférez :" (Options : L'effervescence urbaine, La nature sauvage, L'art et l'architecture)
+    4. "Votre activité idéale :" (Options : Visiter des monuments, Observer la faune, Explorer des musées)
+
+    À la fin, analyse les réponses et annonce la destination gagnante parmi les 3 autorisées avec une explication personnalisée.
+    
+    Commence par la question 1 maintenant.`
+  });
+
+  await callMistralApi();
+};
+
 </script>
 
 <style scoped>
@@ -127,11 +177,11 @@ const sendMessage = async () => {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   position: fixed;
   bottom: 20px;
-  right: 20px; /* CHANGEMENT ICI : positionné à DROITE */
+  right: 20px; 
   z-index: 9999;
   display: flex;
   flex-direction: column;
-  align-items: flex-end; /* CHANGEMENT ICI : alignement à DROITE */
+  align-items: flex-end; 
   gap: 10px;
 }
 
@@ -150,11 +200,7 @@ const sendMessage = async () => {
   justify-content: center;
   transition: all 0.3s ease;
 }
-
-.toggle-btn:hover {
-  transform: scale(1.05);
-  background-color: #1a1a1a;
-}
+.toggle-btn:hover { transform: scale(1.05); background-color: #1a1a1a; }
 
 /* FENÊTRE DE CHAT */
 .chat-window {
@@ -176,9 +222,10 @@ const sendMessage = async () => {
   padding: 15px 20px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start; 
   border-bottom: 1px solid #333;
 }
+.header-left { display: flex; flex-direction: column; gap: 5px; }
 .header h3 { 
   margin: 0; 
   font-size: 0.95rem; 
@@ -186,6 +233,28 @@ const sendMessage = async () => {
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
+
+/* BOUTON QUIZ */
+.quiz-btn {
+  background: white;
+  color: black;
+  border: none;
+  font-size: 0.7rem;
+  padding: 4px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: opacity 0.2s;
+  align-self: flex-start;
+}
+
+.quiz-btn span{
+    font-family: "InterBold";
+}
+
+.quiz-btn:hover { opacity: 0.8; }
+.quiz-btn:disabled { opacity: 0.5; cursor: wait; }
+
 .close-btn { 
   background: none; 
   border: none; 
@@ -207,6 +276,7 @@ const sendMessage = async () => {
   flex-direction: column;
   gap: 20px;
 }
+.loading { font-size: 2rem; color: #ccc; line-height: 10px; }
 
 .user { 
   align-self: flex-end;
@@ -285,7 +355,6 @@ input:focus {
   justify-content: center;
   transition: background 0.2s;
 }
-
 .input-area button:hover { background: #333; }
 .input-area button:disabled { background: #ccc; cursor: not-allowed; }
 

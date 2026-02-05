@@ -5,7 +5,7 @@
     font-family: "Inter";
 }
 
-.btn{
+.btn {
     background-color: white;
     border-radius: 20px;
     padding: 12px 24px;
@@ -13,10 +13,26 @@
     text-decoration: none;
     font-weight: 700;
     font-family: "InterSemiBold";
+    border: 2px solid white;
+    
+    transition: background-color 0.3s ease, border-color 0.3s ease , color 0.3s ease;
 
-    &.white{
+    &:hover {
+        background-color: black;
+        border-color: grey;
+        color: white;
+    }
+
+    &.white {
         background-color: black;
         color: white;
+        border: 2px solid grey;
+
+        &:hover {
+            background-color: white;
+            border-color: white;
+            color: black;
+        }
     }
 }
 
@@ -50,11 +66,33 @@
 
         nav{
             display: flex;
-            gap: 1rem;
+            gap: 2rem;
 
             a{
                 color: lightgrey;
                 text-decoration: none;
+                
+                position: relative;
+                transition: color 0.3s ease;
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    width: 0;
+                    height: 1px;
+                    bottom: -4px;
+                    left: 0;
+                    background-color: white;
+                    transition: width 0.3s ease;
+                }
+
+                &:hover {
+                    color: white;
+                    
+                    &::after {
+                        width: 100%;
+                    }
+                }
             }
         }
     }
@@ -65,23 +103,44 @@
 
 
 .hero{
-    background-image: url('./../images/hero.jpg');
     background-size: cover;
     height: calc(100vh - 76px);
     display: flex;
     align-items: center;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        
+        background-image: url('./../images/hero.jpg');
+        background-size: cover;
+        background-position: center;
+        
+        animation: kenBurns 20s ease-in-out infinite alternate;
+        
+        filter: brightness(0.6); 
+        
+        z-index: -1;
+    }
 
     .container{
         max-width: 1270px;
         margin: 0 auto;
         display: flex;
         flex-direction: column;
+        animation: fadeUp 1s ease-out;
     }
 
     h1,
     h2{
         color: white;
-        font-size: 48px;
+        font-size: 56px;
         font-family: "InterBold";
         text-transform: uppercase;
         text-align: center;
@@ -108,6 +167,26 @@
         display: flex;
         justify-content: center;
         gap: 1rem;
+    }
+}
+
+@keyframes kenBurns {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1.30); 
+    }
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
@@ -180,20 +259,36 @@
             background-size: cover;
             overflow: hidden;
             padding: 3rem 1.5rem;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
 
-            &::before{
+            &::before {
                 content: "";
                 position: absolute;
                 width: 100%;
                 height: 100%;
                 inset: 0;
-                background: rgba(0,0,0,0.45); 
+                background: rgba(0, 0, 0, 0.45); /* Assombrissement normal */
                 z-index: 1;
+                transition: background 0.4s ease; /* Transition douce pour la lumière */
             }
 
-            > *{
+            /* 2. BACKGROUND IMAGE (Sur ::after pour pouvoir zoomer) */
+            &::after {
+                content: "";
+                position: absolute;
+                inset: 0; /* Prend toute la place */
+                background-size: cover;
+                background-position: center;
+                z-index: 0; /* Derrière l'overlay */
+                /* Zoom fluide et lent */
+                transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            }
+
+            /* Contenu (Texte + Bouton) au dessus de tout */
+            > * {
                 position: relative;
                 z-index: 2;
+                /* Petite astuce : le texte ne bouge pas, il reste stable */
             }
 
             h4{
@@ -216,16 +311,28 @@
                 margin-top: 1rem;
             }
 
-            &.destun{
+            &.destun::after {
                 background-image: url("../images/destination_1.jpg");
             }
 
-            &.destdeux{
+            &.destdeux::after {
                 background-image: url("../images/destination_2.jpg");
             }
 
-            &.desttrois{
+            &.desttrois::after {
                 background-image: url("../images/destination_3.jpg");
+            }
+
+            &:hover {
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6); 
+
+                &::after {
+                    transform: scale(1.1); 
+                }
+
+                &::before {
+                    background: rgba(0, 0, 0, 0.25);
+                }
             }
         }
     }

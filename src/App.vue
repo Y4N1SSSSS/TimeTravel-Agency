@@ -1,5 +1,5 @@
 <template>
-  <header class="header">
+    <header class="header">
 
         <div class="header-container">
             <div class="nav-logo">
@@ -18,14 +18,17 @@
             </div>
         </div>
     
-  </header>
+    </header>
 
-  <RouterView />
+    <RouterView />
+
+    <Footer />
 
 </template>
 
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
+import Footer from './components/Footer.vue';
 </script>
 
 <style scoped>

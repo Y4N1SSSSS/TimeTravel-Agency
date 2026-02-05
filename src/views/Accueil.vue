@@ -34,17 +34,17 @@
                 <div class="grid-content destun">
                     <h4>Paris 1889</h4>
                     <p>Exposition universelle & Belle Époque</p>
-                    <a href="" class="btn">Découvrir</a>
+                    <a href="" class="btn white">Découvrir</a>
                 </div>
                 <div class="grid-content destdeux">
                     <h4>Crétacé -65M années</h4>
                     <p>Derniers jours des dinosaures</p>
-                    <a href="" class="btn">Découvrir</a>
+                    <a href="" class="btn white">Découvrir</a>
                 </div>
                 <div class="grid-content desttrois">
                     <h4>Renaissance Florence 1504</h4>
                     <p>Âge d'or artistique</p>
-                    <a href="" class="btn">Découvrir</a>
+                    <a href="" class="btn white">Découvrir</a>
                 </div>
             </div>
         </section>
