@@ -25,7 +25,7 @@
                 <nav v-if="isMenuOpen" class="mobile-nav">
                     <RouterLink to="/" @click="toggleMenu">Accueil</RouterLink>
                     <RouterLink to="/galerie" @click="toggleMenu">Galerie</RouterLink>
-                    <a href="" class="btn mobile-btn">Commandez</a>
+                    <RouterLink to="/#presentation" class="btn mobile-btn">Découvrir</RouterLink>
                 </nav>
             </transition>
         </div>
