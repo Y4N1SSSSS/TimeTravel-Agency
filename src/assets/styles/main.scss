@@ -540,3 +540,29 @@
         
     }
 }
+
+
+/* ===== GALERIE ===== */
+
+
+.galerie{
+    background-color: black;
+
+    .container{
+        margin: 0 auto;
+        max-width: 1270px;
+        display: flex;
+
+        .left,
+        .right{
+            width: 50%;
+            color: white;
+        }
+
+        .un{
+            background-image: url('./../images/destination_1.jpg');
+            background-size: cover;
+            height: 400px;
+        }
+    }
+}

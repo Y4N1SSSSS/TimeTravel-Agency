@@ -8,9 +8,8 @@
             </div>
 
             <nav class="footer-nav">
-                <a href="#">Mentions Légales</a>
-                <a href="#">L'Agence</a>
-                <a href="#">Contact</a>
+                <RouterLink to="/mentions-legales">Mentions Légales</RouterLink>
+                <RouterLink to="/">L'agence</RouterLink>
             </nav>
 
         </div>

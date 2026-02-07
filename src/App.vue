@@ -14,19 +14,17 @@
                 <nav>
                     <RouterLink to="/">Accueil</RouterLink>
                     <RouterLink to="/galerie">Galerie</RouterLink>
-                    <RouterLink to="/contact">Contact</RouterLink>
                 </nav>
             </div>
 
             <div class="commandez">
-                <a href="" class="btn">Commandez</a>
+                <RouterLink to="/#presentation" class="btn">Découvrir</RouterLink>
             </div>
 
             <transition name="slide-fade">
                 <nav v-if="isMenuOpen" class="mobile-nav">
                     <RouterLink to="/" @click="toggleMenu">Accueil</RouterLink>
                     <RouterLink to="/galerie" @click="toggleMenu">Galerie</RouterLink>
-                    <RouterLink to="/contact" @click="toggleMenu">Contact</RouterLink>
                     <a href="" class="btn mobile-btn">Commandez</a>
                 </nav>
             </transition>
