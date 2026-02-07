@@ -59,3 +59,17 @@ Si vous souhaitez lancer le projet localement :
    ```bash
    git clone [https://github.com/Y4N1SSSSS/TimeTravel-Agency.git](https://github.com/Y4N1SSSSS/TimeTravel-Agency.git)
    cd TimeTravel-Agency
+   ```
+
+2. **Installer les dépendances :**
+   ```bash
+   npm install
+   ```
+
+3. **Lancer le serveur de développement :**
+   ```bash
+   npm run dev
+   ```
+
+4. **Accéder au site :**
+   Ouvrez `http://localhost:5173` dans votre navigateur.
